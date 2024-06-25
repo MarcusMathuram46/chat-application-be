@@ -20,8 +20,8 @@ module.exports.login = async (req, res, next) => {
 module.exports.register = async (req, res, next) => {
     try{
         const { username, email, password} = req.body;
-        const userNameCheck = await User.findOne({ username});
-        if(userNameCheck)
+        const usernameCheck = await User.findOne({ username});
+        if(usernameCheck)
             return res.json({ msg: 'Username already exists', status: false });
         const emailCheck = await User.findOne({ email});
         if(emailCheck)
@@ -47,6 +47,7 @@ module.exports.getAllUsers = async (req, res, next) => {
             'avatarImage',
             '_id',
         ])
+        return res.json(users);
     } catch(err) {
         next(err);
     }
