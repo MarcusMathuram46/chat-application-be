@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.set('strictQuery', false);
+// mongoose.set('strictQuery', false);
 console.log('Connecting to Mongodb');
 mongoose
     .connect(process.env.MONGODB_URL)
