@@ -1,4 +1,4 @@
-const Messages = require("../models/message");
+const Messages = require("../models/messageModel");
 
 module.exports.getMessages = async(req, res, next)=>{
     try{
@@ -13,7 +13,6 @@ module.exports.getMessages = async(req, res, next)=>{
             return {
                 fromSelf: msg.sender.toString() === from,
                 message: msg.message.text,
-                timeStamp: msg.timeStamps
             }
         })
         res.json(projectedMessages);
@@ -29,7 +28,6 @@ module.exports.addMessage = async(req, res, next) => {
             message: {text: message},
             users: [from, to],
             sender: from,
-            receiver: to,
         })
 
         if(data) return res.json({ msg: "Message added successfully."});
