@@ -13,7 +13,7 @@ app.use(express.json());
 // mongoose.set('strictQuery', false);
 console.log('Connecting to Mongodb');
 mongoose
-    .connect(process.env.MONGODB_URL)
+    .connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(()=>{
         console.log('Connected to MongoDB');
     })
@@ -22,7 +22,7 @@ mongoose
     })
 
 // app.use(middleware.requestLogger);
-app.get("/ping", (_req, res)=>{
+app.get("/ping", (req, res)=>{
     return res.json({msg: "Ping Successful"})
 })
 
@@ -41,16 +41,42 @@ const io = socket(server, {
 })
 
 global.onlineUsers = new Map();
-io.on("connection",(socket)=>{
-    global.chatSocket = socket;
-    socket.on("add-user", (userId)=>{
+
+io.on("connection", (socket) => {
+    console.log('New client connected', socket.id);
+
+    socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id);
-    })
-    socket.on("send-msg", (data)=>{
+        console.log(`User ${userId} connected with socket ID ${socket.id}`);
+    });
+
+    socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.to);
         if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-receive", data.msg);
+            console.log(`Message sent from ${data.from} to ${data.to}: ${data.msg}`);
         }
-    })
-})
+    });
+
+    socket.on("disconnect", () => {
+        onlineUsers.forEach((value, key) => {
+            if (value === socket.id) {
+                onlineUsers.delete(key);
+            }
+        });
+        console.log('Client disconnected', socket.id);
+    });
+});
+// io.on("connection",(socket)=>{
+//     global.chatSocket = socket;
+//     socket.on("add-user", (userId)=>{
+//         onlineUsers.set(userId, socket.id);
+//     })
+//     socket.on("send-msg", (data)=>{
+//         const sendUserSocket = onlineUsers.get(data.to);
+//         if (sendUserSocket) {
+//             socket.to(sendUserSocket).emit("msg-receive", data.msg);
+//         }
+//     })
+// })
 
