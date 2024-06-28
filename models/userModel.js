@@ -16,10 +16,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        hash: true,
         required: true,
         min: 8,
-        max: 1024,
     },
     isAvatarImageSet: {
         type: Boolean,
@@ -41,4 +39,4 @@ const userSchema = new mongoose.Schema({
 //     }
 // })
 
-module.exports= mongoose.model('User', userSchema, 'users')
+module.exports= mongoose.model('Users', userSchema)

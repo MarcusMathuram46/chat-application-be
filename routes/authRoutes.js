@@ -6,6 +6,6 @@ router.post("/login", login);
 router.post("/register", register);
 router.get("/allUsers/:id", getAllUsers);
 router.post("/setavatar/:id", setAvatar);
-router.get("/logout", logout);
+router.get("/logout/:id", logout);
 
 module.exports = router;
